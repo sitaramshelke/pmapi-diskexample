@@ -8,10 +8,10 @@ class TotalRead():
     def __init__(self):
         self.context = None
         self.opts = pmapi.pmOptions()
-        # self.opts.pmSetShortOptions()
+        self.opts.pmSetShortOptions("V?")
         self.opts.pmSetLongOptionHeader("Options")
-        self.opts.pmSetLongOptionHelp()
         self.opts.pmSetLongOptionVersion()
+        self.opts.pmSetLongOptionHelp()
     def execute(self):
         if self.context:
             metrics = ('disk.all.read',)
@@ -29,6 +29,7 @@ class TotalRead():
                     descs[0].contents.type,
                     PM_TYPE_U32)
             print "Total Disk Reads: ",atom.ul
+            self.context.pmFreeResult(result)
 
     def connect(self):
         """Establish a PMAPI context Local using args """
@@ -44,3 +45,5 @@ if __name__ == "__main__":
         tr.execute()
     except pmapi.pmErr as error:
         print "Error: ",error.message()
+    except pmapi.pmUsageErr as usage:
+        usage.message()
